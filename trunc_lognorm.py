@@ -18,13 +18,13 @@ class TruncLogNorm(rv_continuous):
 
     Notes
     -----
-    The probability density function for `lognorm` is:
+    The probability density function for `TruncLogNorm` is:
     
     .. math::
-        f(x, s) = \frac{1}{s x \sqrt{2\pi}}
+        f(x, s) \propto \frac{1}{s x \sqrt{2\pi}}
                   \exp(-\frac{1}{2} (\frac{\log(x)}{s})^2)
     
-    for ``a < x \leq b``, and ``s > 0``.
+    for ``a < x <= b``, and ``s > 0``.
     
     `TruncLogNorm` takes ``a``, ``b``, and ``s`` as a shape parameters.
     
