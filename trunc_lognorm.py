@@ -1,4 +1,5 @@
 r"""
+a truncated log-normal distribution
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -13,7 +14,43 @@ __author__ = ('Duncan Campbell')
 
 class TruncLogNorm(rv_continuous):
     r"""
-    truncted log-normal distribution
+    A truncated log-normal continuous random variable.
+
+    Notes
+    -----
+    The probability density function for `lognorm` is:
+    
+    .. math::
+        f(x, s) = \frac{1}{s x \sqrt{2\pi}}
+                  \exp(-\frac{1}{2} (\frac{\log(x)}{s})^2)
+    
+    for ``a < x \leq b``, and ``s > 0``.
+    
+    `TruncLogNorm` takes ``a``, ``b``, and ``s`` as a shape parameters.
+    
+    A common parametrization for a lognormal random variable ``Y`` is in
+    terms of the mean, ``mu``, and standard deviation, ``sigma``, of the
+    unique normally distributed random variable ``X`` such that exp(X) = Y.
+    This parametrization corresponds to setting ``s = sigma`` and ``scale =
+    exp(mu)``.
+
+    The standard form of this distribution is a standard log-normal
+    truncated to the range [a, b] — notice that a and b
+    are defined over the domain of the standard log-normal. 
+    
+    To convert clip values for a specific mean and standard deviation, use::
+
+        a, b = (myclip_a - loc) / scale, (myclip_b - loc) / scale
+
+    `TruncLogNorm` takes :math:`a` and :math:`b` as shape parameters.
+
+    To get a "frozen" RV object, holding the given parameters fixed, use::
+
+        >>> trun_lognorm = TruncLogNorm()
+        >>> frozen_rv = trun_lognorm(a=a, b=b, s=s, loc=loc, scale=scale)
+
+    where a, b, s, loc, and scale are the desired paramaters of the 
+    frozen distribution.
     """
 
     def _argcheck(self, a, b, s):
@@ -37,6 +74,7 @@ class TruncLogNorm(rv_continuous):
 
     def _norm(self, a, b, s):
         r"""
+        normalization factor
         """
         return 1.0/(s * np.sqrt(2.0*np.pi)) * 1.0/(self._n1(a, b, s) + self._n2(a, b, s))
 
@@ -47,6 +85,7 @@ class TruncLogNorm(rv_continuous):
 
     def _pdf(self, x, a, b, s):
         r"""
+        probability distribution function
         """
         norm = self._norm(a, b, s)
         with np.errstate(divide='ignore', invalid='ignore'):
@@ -54,6 +93,7 @@ class TruncLogNorm(rv_continuous):
 
     def _cdf(self, x, a, b, s):
         """
+        cumulative distribution function
         """
         cdf = 0.5 + 0.5 * erf((np.log(x))/(np.sqrt(2.0) * s)) - self._n1(a, b, s)
         cdf = cdf/self._n2(a, b, s)
@@ -63,8 +103,9 @@ class TruncLogNorm(rv_continuous):
 
     def _ppf(self, q, a, b, s):
         r"""
+        percent point function (inverse of cdf — percentiles)
         """
         q = q*self._n2(a, b, s)
-        ppf = np.exp(erfinv(2.0*q-1.0+2.0*self._n1(a, b, s))*np.sqrt(2.0*s))
+        ppf = np.exp(erfinv(2.0*q-1.0+2.0*self._n1(a, b, s))*np.sqrt(2.0*s**2))
         return ppf
 
