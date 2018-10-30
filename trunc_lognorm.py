@@ -42,12 +42,10 @@ class TruncLogNorm(rv_continuous):
 
         a, b = (myclip_a - loc) / scale, (myclip_b - loc) / scale
 
-    `TruncLogNorm` takes :math:`a` and :math:`b` as shape parameters.
-
     To get a "frozen" RV object, holding the given parameters fixed, use::
 
-        >>> trun_lognorm = TruncLogNorm()
-        >>> frozen_rv = trun_lognorm(a=a, b=b, s=s, loc=loc, scale=scale)
+        >>> trunc_lognorm = TruncLogNorm()
+        >>> frozen_rv = trunc_lognorm(a=a, b=b, s=s, loc=loc, scale=scale)
 
     where a, b, s, loc, and scale are the desired paramaters of the 
     frozen distribution.
