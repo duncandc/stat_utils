@@ -35,7 +35,7 @@ class TruncLogNorm(rv_continuous):
     exp(mu)``.
 
     The standard form of this distribution is a standard log-normal
-    truncated to the range [a, b] — notice that a and b
+    truncated to the range [a,b] - notice that a and b
     are defined over the domain of the standard log-normal. 
     
     To convert clip values for a specific mean and standard deviation, use::
@@ -101,7 +101,7 @@ class TruncLogNorm(rv_continuous):
 
     def _ppf(self, q, a, b, s):
         r"""
-        percent point function (inverse of cdf — percentiles)
+        percent point function (inverse of cdf - percentiles)
         """
         q = q*self._n2(a, b, s)
         ppf = np.exp(erfinv(2.0*q-1.0+2.0*self._n1(a, b, s))*np.sqrt(2.0*s**2))
